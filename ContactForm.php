@@ -13,7 +13,7 @@
     </style>
     
     </head>
-    <body style="background-color:#0A61C4;">
+    <body style="background-color:#f58345;">
          <div class="row" style="margin-top:2em;" >
                 <div class="col-sm-1">
                 </div>
@@ -67,7 +67,7 @@
                                  
                                 <div class="form-group"> <!--add validation -->
                                     <label for="country" class="fa fa-file" > Message: </label>
-                                    <textarea  class="form-control" name="messageContent" > Let Us Know How We Can Help You!
+                                    <textarea  class="form-control" name="message_content" id="message_content" required> Let Us Know How We Can Help You!
                                     </textarea>
                                 </div>
                                 
@@ -110,13 +110,54 @@
             </div>
         
         
-        
-      
-        
-        
-        
-        
-    </body>
-    
-    
+            <?php 
+            require 'vendor/autoload.php'; // Required for Composer to run
+
+           //var_dump($GLOBALS); //used to test incomming variables by displaying to screen
+
+           if(isset($_POST['Submit'])){ // confirm form has been completed
+                $first_name = $_POST['first_name'];//Assign variables from form
+                $last_name = $_POST['last_name'];
+                $email_address =  $_POST['email'];
+                $phone_number =  $_POST['phone_number'];
+                $full_name = $first_name . "," . $last_name; // append both names
+                $message_content = $_POST['message_content'];
+
+                /* Email Send Begins */
+
+
+                        $email = new \SendGrid\Mail\Mail(); 
+                        $email->setFrom($email_address, $full_name ); //sets whos it from
+                        $email->setSubject("Contact Form Submission");//Subject name
+                        $email->addTo("YourSupportEmail@example.com"); //who the email is sent to
+                        //start of message - format using html and php for vars
+                        $email->addContent(
+                            "text/html",   "<h1>Contact Form - Submission </h1>
+                                            <h2>From: </h2>
+                                            <b>First Name:</b> $first_name <br/>
+                                            <b>Last Name:</b> $last_name<br/>
+                                            <b>Email:</b> $email_address<br/>
+                                            <b>Phone:</b> $phone_number<br/>
+                                            
+                                            <h2>Message:</h2>
+                                            <p> $message_content </p>
+                                            "
+                        );//end of message
+                        $sendgrid = new \SendGrid("SG.b3s************************************************"); //API CODE goes here
+                        try {
+                            $response = $sendgrid->send($email); // send email
+                            //error handling dont want it to show to user
+                            //print $response->statusCode() . "\n";
+                            //print_r($response->headers());
+                           //print $response->body() . "\n";
+                        } catch (Exception $e) {
+                           // echo 'Caught exception: '. $e->getMessage() ."\n";
+                        }
+
+                /* Email Send Ends */
+
+           }      
+        ?>
+           
+    </body>    
 </html>
