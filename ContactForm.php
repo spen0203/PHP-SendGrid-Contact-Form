@@ -13,7 +13,7 @@
     </style>
     
     </head>
-    <body style="background-color:#f58345;">
+    <body style="background-color:#0A61C4;">
          <div class="row" style="margin-top:2em;" >
                 <div class="col-sm-1">
                 </div>
